@@ -1,5 +1,5 @@
 <template>
-  <v-card width="500" class="mx-auto mt-5">
+  <v-card width="500" class="mx-auto mt-5" shaped>
     <v-form ref='form' lazy-validation>      
       <v-card-title class="justify-center">
         <h2>Создать аккаунт</h2>
@@ -13,7 +13,6 @@
 
         <v-text-field v-model="age" label="Возраст*" :rules="ageRules" required></v-text-field>
 
-        <v-text-field readonly>Выберите пол:</v-text-field>
         <v-radio-group v-model="gender_choice" required :rules="genderRules" row>
           <v-radio v-for="gender in genders" :key="gender" :label="gender"></v-radio>
         </v-radio-group>
@@ -61,20 +60,17 @@ export default {
     confirmPassRules() {
       return [pass => pass === this.password || "Пароли не совпадают"]
     },
-    passHash() {
-      return 
-    }
   },
   methods: {
     signup() {
       if (this.$refs.form.validate()) {
 
-        data = {
-          'name': this.name,
-          'password': this.password,
-          'age': this.age,
-          'gender': this.gender_choice,
-          'fullname': this.first_name + ' ' + this.last_name
+        var data = {
+          name: this.name,
+          password: this.password,
+          age: this.age,
+          gender: this.gender_choice,
+          fullname: this.first_name + ' ' + this.last_name
         }
 
         this.$store.dispatch('signup', data)

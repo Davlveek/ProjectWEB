@@ -22,14 +22,3 @@ export default {
   })
 };
 </script>
-
-<style>
-.home {
-  height: 100%;
-  /*background:linear-gradient(90deg, rgb(40, 34, 148) 0%, rgba(15,108,103,1) 53%, rgb(37, 88, 153) 100%);*/
-}
-
-.home.bar {
-  background-color: rgb(66, 45, 75);
-}
-</style>

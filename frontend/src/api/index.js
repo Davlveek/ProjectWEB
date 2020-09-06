@@ -3,8 +3,8 @@ import axios from 'axios'
 const session = axios.create({});
 
 export default {
-    login(email, password) {
-        return session.post('/api/auth/login/', {email, password});
+    login(data) {
+        return session.post('/api/auth/login/', data);
     },
     logout() {
         return session.post('/api/auth/logout/', {})

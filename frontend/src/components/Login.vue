@@ -1,5 +1,5 @@
 <template>
-  <v-card width="500" class="mx-auto mt-5">
+  <v-card width="500" class="mx-auto mt-5" shaped>
     <v-form ref='form' lazy-validation>
       <v-card-text>
         <v-text-field v-model="name" label="Никнейм" :rules="nameRules" required></v-text-field>
@@ -37,10 +37,10 @@ export default {
       if (this.$refs.form.validate()) {
         this.auth_in_process = true
         
-        data = {
-          'name': this.name,
-          'password': this.password
-        }
+        //var data = {
+        //  name: this.name,
+        //  password: this.password
+        //}
 
         //this.$store.dispatch('login', data)
                 //    .then(() => {this.$router.push('app')}))
@@ -52,7 +52,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .loader {
   width: 12px;
   height: 12px;
