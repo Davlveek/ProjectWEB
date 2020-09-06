@@ -9,8 +9,8 @@ export default {
     logout() {
         return session.post('/api/auth/logout/', {})
     },
-    signup(userdata) {
-        return session.post('/api/auth/signup/', userdata)
+    signup(data) {
+        return session.post('/api/auth/signup/', data)
     },
     updateInfo(data) {
         return session.post('/api/app/updateinfo/', data)

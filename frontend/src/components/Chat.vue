@@ -6,6 +6,9 @@
 
 <script>
 export default {
-    name: 'Chat'
+    name: 'Chat',
+    props: [
+        'chel2'
+    ]
 }
 </script>

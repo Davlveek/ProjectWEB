@@ -1,35 +1,41 @@
 <template>
-    <v-main>
-        <h1>Привет, {{ username }}</h1>
-        <div v-if="!show_search">
-            Добавьте несколько интересов, чтобы мы могли лучше сопоставить Вам пару
-            <input type="text" @keypress.enter="saveInterest" v-model="new_interest">
-            <v-btn @click="show_search = true">Далее</v-btn>
-        </div>        
-
-        <div v-if="show_search">
-            <div>
-                <v-btn @click="searchPeople">Начать поиск</v-btn>
-            </div>
-            Ваши интересы:
-            <div v-for="(interest, index) in interests" :key="index">
-                <input type="text" :value="interest">
-            </div>
-            Добавить:
-            <input type="text" @keypress.enter="saveInterest" v-model="new_interest">
-        </div>
-    </v-main>
+  <v-main>
+    <h1>Привет, {{ username }}</h1>
+    <div v-if="round_ready">
+      <Chat :chel2="next_chel"></Chat>
+    </div>
+    <div v-else-if="search_in_progress">
+      <span class="loader"></span>
+    </div>
+    <div v-else>
+      <p>Нажми на кнопку, чтобы начать раунд</p>
+      <v-btn @click="pickup">Искать других дебилов</v-btn>
+    </div>
+  </v-main>
 </template>
 
 <script>
+import Chat from '../components/Chat'
+
 export default {
     name: 'App',
+    components: {
+        Chat
+    },
     data: () => ({
-        new_interest: '',
-        show_search: false,
+        search_in_progress: false,
+        round_ready: false,
     }),
     methods: {
-        saveInterest() {
+        pickup() {
+            this.search_in_progress = true;
+            this.$store.dispatch('pickup')
+                    .then(this.setupRound)
+        },
+        setupRound() {
+            
+        }
+        /*saveInterest() {
             this.$store.commit('addInterest', this.new_interest);
             this.new_interest = '';
         },
@@ -44,15 +50,19 @@ export default {
             ]
             console.log(participants)
             this.$router.push('/chat/');
-        }
+        }*/
     },
     computed: {
         username() {
             return this.$store.state.user;
         },
-        interests() {
-            return this.$store.state.interests;
+        rounddata() {
+            return this.$store.state.rounddata;
         }
     }
 }
 </script>
+
+<style scoped>
+
+</style>

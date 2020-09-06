@@ -1,23 +1,20 @@
 <template>
   <v-card width="500" class="mx-auto mt-5">
-    <v-card-text>
-      <v-text-field label="Email" type="text" v-model="email"></v-text-field>
-      <v-text-field label="Password" type="password" v-model="password"></v-text-field>
-    </v-card-text>
-    
-    <v-card-actions class="justify-center">
-      <div v-if="!auth_in_process">
-        <v-btn color="success" @click="authenticateUser">log in</v-btn>
-      </div>
-
-      <div v-else>
-        <span class="loader"></span>
-      </div>
-    </v-card-actions>
-
-    <v-card-text>
-      <p class="text-xs-right">Don't have an account? Sign up here</p>
-    </v-card-text>
+    <v-form ref='form' lazy-validation>
+      <v-card-text>
+        <v-text-field v-model="name" label="Никнейм" :rules="nameRules" required></v-text-field>
+        <v-text-field v-model="password" type="password" label="Пароль" :rules="passRules" required></v-text-field>
+      </v-card-text>
+      
+      <v-card-actions class="justify-center">
+        <div v-if="!auth_in_process">
+          <v-btn @click="login">Войти</v-btn>
+        </div>
+        <div v-else>
+          <span class="loader"></span>
+        </div>
+      </v-card-actions>
+    </v-form>
   </v-card>
 </template>
 
@@ -25,19 +22,31 @@
 export default {
   name: "Login",
   data: () => ({
-    email: "",
+    name: "",
     password: "",
     auth_in_process: false,
+    nameRules: [
+      name => !!name || "Введите никнейм",
+    ],
+    passRules: [
+      pass => !!pass || "Введите пароль",
+    ]
   }),
   methods: {
-    authenticateUser() {
-      this.auth_in_process = true
-      
-      //this.$store.dispatch('login', {email, password})
-      //    .then(() => {this.$router.push('app')}))
-      
-      setTimeout(() => this.$router.push('app'), 1500)
-      console.log(this.email, this.password)
+    login() {
+      if (this.$refs.form.validate()) {
+        this.auth_in_process = true
+        
+        data = {
+          'name': this.name,
+          'password': this.password
+        }
+
+        //this.$store.dispatch('login', data)
+                //    .then(() => {this.$router.push('app')}))
+        
+        setTimeout(() => this.$router.push('app'), 1500)
+      }
     },
   }
 };

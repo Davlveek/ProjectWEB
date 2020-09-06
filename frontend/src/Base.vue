@@ -9,18 +9,19 @@
 
       <v-spacer></v-spacer>
 
-      <v-btn @click="openAppPage">Get app</v-btn>
-      <v-btn @click="showLogin">Log in</v-btn>
-      <v-btn @click="showSignup">Sign up</v-btn>
+      <v-btn @click="showLogin">Войти</v-btn>
+      <v-btn @click="showSignup">Зарегистрироваться</v-btn>
+      <v-btn @click="openAppPage">Мобильное приложение</v-btn>
     </v-app-bar>
 
     <router-view :comp="currentComp"/>
-
+    <!--
     <v-footer app class="bar">
       <v-col class="text-left">Дахнович прими</v-col>
       <v-col class="text-center">Huinder</v-col>
       <v-col class="text-right">{{ new Date().getFullYear() }}</v-col>
     </v-footer>
+    -->
   </v-app>
 </template>
 
