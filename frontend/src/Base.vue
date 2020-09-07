@@ -1,15 +1,10 @@
 <template>
-  <v-app
-      style="    
-        background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-        background-size: 400% 400%;
-        animation: gradient 15s ease infinite;
-      ">
-    <v-app-bar app class="bar" 
-              style="
-                    background: background-color: #485461;
-                    background-image: linear-gradient(315deg, #485461 0%, #28313b 74%);
-      ">
+  <v-app style="background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+                background-size: 400% 400%;
+                animation: gradient 15s ease infinite;">
+
+    <v-app-bar app class="bar" style="background: background-color: #485461;
+                                      background-image: linear-gradient(315deg, #485461 0%, #28313b 74%);">
       <v-toolbar-title>
         <router-link to="/" style="color: #FFF; text-decoration: none;">
           <span @click="cleanup">Huinder</span>
@@ -18,9 +13,10 @@
 
       <v-spacer></v-spacer>
 
-      <v-btn @click="showLogin">Войти</v-btn> 
-      <v-btn @click="showSignup">Зарегистрироваться</v-btn> 
+      <v-btn v-if="!is_authenticated" @click="showLogin">Войти</v-btn> 
+      <v-btn v-if="!is_authenticated" @click="showSignup">Зарегистрироваться</v-btn> 
       <v-btn @click="openAppPage">Мобильное приложение</v-btn> 
+      <v-btn v-if="is_authenticated" @click="logout">Выйти</v-btn>
     </v-app-bar>
 
     <router-view :comp="currentComp"/>
@@ -37,13 +33,42 @@
 <script>
 import Login from './components/Login'
 import Signup from './components/Signup'
-
+import {updateHeader} from './api'
 export default {
   name: "Base",
   data: () => ({
     currentComp: null,
   }),
+  computed: {
+    access_token() {
+      return this.$store.state.token;
+    },
+    is_authenticated() {
+      return (this.access_token === null) ? false : true;
+    },    
+    user() {
+      return this.$store.state.user;
+    }
+  },
   methods: {
+    get_tokens_from_storage() {
+      var token = localStorage.getItem('access_token');
+      if (token) {
+        var refresh = localStorage.getItem('refresh_token');
+        this.$store.commit('setToken', {access: token, refresh: refresh});
+      }
+    },
+    checkAuth() {
+      if (this.access_token === null) {
+        this.get_tokens_from_storage();
+      }
+
+      if (this.user === null && this.is_authenticated) {
+        updateHeader(this.access_token)
+        this.$store.dispatch('getUserInfo')
+                .then(() => this.$router.push('/app'))
+      }
+    },
     showLogin() {
       this.currentComp = Login;
     },
@@ -56,10 +81,18 @@ export default {
       window.open(routeData.href, '_blank');
       */
     },
+    logout() {
+      localStorage.removeItem('access_token')
+      localStorage.removeItem('refresh_token')
+      this.$store.dispatch('logout')
+      updateHeader(null)
+    },
     cleanup() {
       this.currentComp = null;
     },
   },
+  created: function() { this.checkAuth()},
+  updated: function() { this.checkAuth()},
 }
 </script>
 

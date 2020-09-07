@@ -1,36 +1,43 @@
-from django.contrib.auth.models import User
-from django.http.response import JsonResponse
-from rest_framework.parsers import JSONParser
-from .models import Message
-from .serializers import MessageSerializer, UserSerializer
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+
+from .models import User
+from .serializers import UserSerializer
 
 
-def user_list(request, pk=None):
-    if request.method == 'GET':
-        if pk:
-            users = User.objects.filter(id=pk)
-        else:
-            users = User.objects.all()
-        serializer = UserSerializer(users, many=True, context={'request': request})
-        return JsonResponse(serializer.data, safe=False)
-    elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = UserSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
+# AUTH VIEWS
+
+class LogoutView(APIView):
+    permission_classes = (IsAuthenticated, )
+
+    def post(self, request):
+        return Response(status=200)
 
 
-def message_list(request, sender=None, receiver=None):
-    if request.method == 'GET':
-        messages = Message.objects.filter(sender_id=sender, receiver_id=receiver)
-        serializer = MessageSerializer(messages, many=True, context={'request': request})
-        return JsonResponse(serializer.data, safe=False)
-    elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = MessageSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
+class SignupView(APIView):
+    def post(self, request):
+        User.objects.create_user(name=request.data['name'], age=request.data['age'], gender=request.data['gender'], password=request.data['password'])
+        return Response(status=201)
+
+
+# INFO VIEWS
+
+class UserInfoView(APIView):
+    permission_classes = (IsAuthenticated, )
+
+    def get(self, request):
+        user = User.objects.get(name=request.user.name)
+        serializer = UserSerializer(user, many=False)
+        return Response(serializer.data)
+
+    def post(self, request):
+        User.objects.filter(name=request.user.name).update(request.data)
+        return Response(status=200)
+
+
+class PickupView(APIView):
+    permission_classes = (IsAuthenticated, )
+
+    def get(self, request):
+        return Response(status=404)

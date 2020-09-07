@@ -1,21 +1,41 @@
 import axios from 'axios'
 
-const session = axios.create({});
+axios.defaults.baseURL = '//localhost:8000/';
 
 export default {
+    // AUTH
     login(data) {
-        return session.post('/api/auth/login/', data);
+        return axios.post('/api/auth/login/', data);
+    },
+    refresh(data) {
+        return axios.post('/api/auth/refresh/', data)
     },
     logout() {
-        return session.post('/api/auth/logout/', {})
+        return axios.post('/api/auth/logout/', {})
     },
     signup(data) {
-        return session.post('/api/auth/signup/', data)
+        return axios.post('/api/auth/signup/', data)
     },
-    updateInfo(data) {
-        return session.post('/api/app/updateinfo/', data)
-    },
+    
+    // GET INFO
     pickup(){
-        return session.get('/api/app/pickup/')
-    }
+        return axios.get('/api/app/pickup/')
+    },
+    getuserinfo() {
+        console.log(axios.defaults.headers)
+        return axios.get('/api/app/user/')
+    },
+
+    // SET INFO
+    updateuserinfo(data) {
+        return axios.post('/api/app/user/', data)
+    },
 };
+
+export function updateHeader(token) {
+        if (token === null) {
+            axios.defaults.headers.common['Authorization'] = null;
+        } else {
+            axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+        }
+}

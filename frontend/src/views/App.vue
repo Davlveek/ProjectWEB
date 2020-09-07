@@ -12,7 +12,7 @@
           <span class="loader"></span>
         </div>
         <div v-else>
-          <h1>Привет, {{ username }}</h1>
+          <h1>Привет, {{ user.name }}</h1>
           <p>Нажмите на кнопку, чтобы начать раунд</p>
           <v-btn @click="pickup">Искать других дебилов</v-btn>
         </div>
@@ -54,13 +54,26 @@ export default {
     },
   },
   computed: {
-    username() {
+    user() {
       return this.$store.state.user;
     },
     rounddata() {
       return this.$store.state.rounddata;
     },
+    token() {
+      return this.$store.state.token;
+    }
   },
+  created: function() {
+    if (!this.token) {
+      this.$router.push({name:'Home', props: {comp: 'null'}})
+    }
+  },
+  updated: function() {
+    if (!this.token) {
+      this.$router.push({name:'Home', props: {comp: 'null'}})
+    }
+  }
 };
 </script>
 

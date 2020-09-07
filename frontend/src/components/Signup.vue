@@ -14,11 +14,9 @@
         <v-text-field v-model="age" label="Возраст*" :rules="ageRules" required></v-text-field>
 
         <v-radio-group v-model="gender_choice" required :rules="genderRules" row>
-          <v-radio v-for="gender in genders" :key="gender" :label="gender"></v-radio>
+          <v-radio v-for="gender in genders" :key="gender.short" :label="gender.value" :value="gender.short"></v-radio>
         </v-radio-group>
 
-        <v-text-field v-model="first_name" label="Имя"></v-text-field>
-        <v-text-field v-model="last_name" label="Фамилия"></v-text-field>
       </v-card-text>
 
       <v-card-actions class="justify-center">
@@ -36,9 +34,7 @@ export default {
     name: '',
     password: '',
     age: '',
-    first_name: '',
-    last_name: '',
-    genders: ["мужчина", "женщина", "другое"],
+    genders: [{value: "мужчина", short: "m"}, {value: "женщина", short: "f"}, {value: "другое", short: "o"}],
     gender_choice: null,
     nameRules: [
       name => name.length >= 3 || 'Выберите имя длиной не менее 3 символов',
@@ -70,11 +66,10 @@ export default {
           password: this.password,
           age: this.age,
           gender: this.gender_choice,
-          fullname: this.first_name + ' ' + this.last_name
         }
-
+        
         this.$store.dispatch('signup', data)
-                    .then(() => this.$router.push('/'))
+                   .then(() => this.$router.push('/'))
       }
     },
   },

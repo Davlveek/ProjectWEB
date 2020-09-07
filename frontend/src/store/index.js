@@ -7,62 +7,63 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    user: false,
-    interests: [],
-    token: false,
+    user: null,
+    token: null,
+    refresh_token: null,
     rounddata: {},
   },
   mutations: {
-    loginSuccess(state, user, token) {
-      state.user = user;
-      state.token = token;
-    },
-    loginFailed(state) {
-      return state;
+
+    // AUTH
+    setToken(state, data) {
+      state.token = data.access;
+      state.refresh_token = data.refresh;
     },
     logout(state) {
-      state.user = ''
+      state.user = null;
       state.token = null;
+      state.refresh_token = null;
     },
-    updateInfo(state, interests) {
-      state.interests = interests;
-    },
-    addInterest(state, interest) {
-      state.interests.push(interest);
+
+    // INFO
+    updateUserInfo(state, data) {
+      state.user = data;
     },
     updateRoundData(state, data) {
-      state.rounddata.participants = data.participants;
+      state.rounddata = data;
     },
-    sudoku(state) {
-      return state;
-    }
   },
   actions: {
-    login({commit}, {email, password}) {
-      return api.login(email, password)
-                .then(({data}) => commit('loginSuccess', data.user, data.token))
-                .then(({data}) => commit('updateInfo', data.interests))
-                .catch(() => commit('sudoku'))
+
+    // AUTH
+    login({commit}, data) {
+      return api.login(data)
+                .then(({data}) => commit('setToken', data))
     },
     logout({commit}) {
       return api.logout()
                 .then(() => commit('logout'))
-                .catch(() => commit('sudoku'))
     },
     signup({commit}, data) {
+      console.log(commit);
       return api.signup(data)
-                .catch(() => commit('sudoku'))
     },
-    updateInfo({commit}, data) {
-      return api.updateInfo(data)
-                .then(({data}) => commit('updateInfo', data.interests))
-                .catch(() => commit('sudoku'))
-    },
-    pickup({commit}) {
+
+    // GET INFO
+    getRoundData({commit}) {
       return api.pickup()
                 .then(({data}) => commit('updateRoundData', data))
-                .catch(() => commit('sudoku'))
-    }
+    },
+    getUserInfo({commit}) {
+      return api.getuserinfo()
+                .then(({data}) => commit('updateUserInfo', data))
+    },
+
+    // SET INFO
+    updateUserInfo({commit}, data) {
+      return api.updateuserinfo(data)
+                .then(({data}) => commit('updateUserInfo', data))
+    },
   },
   modules: {
   }

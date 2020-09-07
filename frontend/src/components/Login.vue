@@ -35,18 +35,31 @@ export default {
   methods: {
     login() {
       if (this.$refs.form.validate()) {
-        this.auth_in_process = true
+        this.auth_in_process = true;
         
-        //var data = {
-        //  name: this.name,
-        //  password: this.password
-        //}
+        var data = {
+          name: this.name,
+          password: this.password
+        };
 
-        //this.$store.dispatch('login', data)
-                //    .then(() => {this.$router.push('app')}))
+        this.$store.dispatch('login', data)
+                    .then(this.postlogin);
         
-        setTimeout(() => this.$router.push('app'), 1500)
       }
+    },
+    postlogin() {
+        localStorage.setItem('access_token', this.access_token);
+        localStorage.setItem('refresh_token', this.refresh_token);
+        this.auth_in_process = false;
+        this.$router.push('app');
+    }
+  },
+  computed: {
+    access_token() {
+      return this.$store.state.token;
+    },
+    refresh_token() {
+      return this.$store.state.refresh_token;
     },
   }
 };
