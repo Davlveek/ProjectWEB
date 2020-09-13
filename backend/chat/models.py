@@ -1,6 +1,6 @@
-from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
-from django.contrib.auth.hashers import make_password
+from django.db.models import (ForeignKey, DateTimeField, TextField, CASCADE, IntegerField, CharField, Model)
+
 
 class UserManager(BaseUserManager):
     def create_user(self, name, age, gender, password=None):
@@ -17,10 +17,10 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
-    name = models.TextField(unique=True)
-    first_name = models.TextField(blank=True)
-    last_name = models.TextField(blank=True)
-    age = models.IntegerField()
+    name = TextField(unique=True)
+    first_name = TextField(blank=True)
+    last_name = TextField(blank=True)
+    age = IntegerField()
 
     GENDERS = (
         ("m", "male"),
@@ -28,7 +28,7 @@ class User(AbstractBaseUser):
         ("o", "other"),
     )
 
-    gender = models.CharField(max_length=1, choices=GENDERS)
+    gender = CharField(max_length=1, choices=GENDERS)
 
     objects = UserManager()
 
@@ -37,3 +37,16 @@ class User(AbstractBaseUser):
 
     def __str__(self):
         return f'{self.name}, {self.age} years old, {self.get_gender_display()}'
+
+
+class MessageModel(Model):
+    user = ForeignKey(User, on_delete=CASCADE, verbose_name='user',
+                      related_name='from_user', db_index=True)
+    recipient = ForeignKey(User, on_delete=CASCADE, verbose_name='recipient',
+                           related_name='to_user', db_index=True)
+    timestamp = DateTimeField('timestamp', auto_now_add=True, editable=False,
+                              db_index=True)
+    body = TextField('body')
+
+    def __str__(self):
+        return str(self.id)
