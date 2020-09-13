@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'chat',
     'corsheaders',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -136,3 +137,14 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 AUTH_USER_MODEL = 'chat.User'
+
+ASGI_APPLICATION = 'backend.routing.application'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
+
