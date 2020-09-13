@@ -15,7 +15,16 @@
         android:divider="#fff"
         android:layout_height="wrap_content"
         android:paddingBottom="10dp"
-        android:clipToPadding="false" />
+        android:clipToPadding="false" >
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <View
+        android:id="@+id/divider3"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_weight="0"
+        android:background="?android:attr/listDivider" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,7 +40,7 @@
             android:ems="10"
             android:hint="Message"
             android:inputType="text"
-            android:paddingHorizontal="10dp"
+            android:paddingLeft="16dp"
             android:text=""
             android:background="@null"/>
 
