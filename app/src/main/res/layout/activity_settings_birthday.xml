@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SettingsBirthdayActivity">
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="24dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/birthdayLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/birthdayTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:text="Birthday" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:weightSum="100">
+
+                    <Spinner
+                        android:id="@+id/birthdayDateSpinner"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="0dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_weight="25"
+                        android:background="@drawable/spinner_background"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:paddingLeft="7dp"
+                        android:paddingRight="7dp"
+                        android:spinnerMode="dialog"
+                        android:textSize="16sp" />
+
+                    <Spinner
+                        android:id="@+id/birthdayMonthSpinner"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_weight="45"
+                        android:background="@drawable/spinner_background"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:entries="@array/months"
+                        android:paddingLeft="7dp"
+                        android:paddingRight="7dp"
+                        android:spinnerMode="dialog"
+                        android:textSize="16sp" />
+
+                    <Spinner
+                        android:id="@+id/birthdayYearSpinner"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginEnd="0dp"
+                        android:layout_weight="30"
+                        android:background="@drawable/spinner_background"
+                        android:backgroundTint="@color/colorPrimary"
+                        android:paddingLeft="7dp"
+                        android:paddingRight="7dp"
+                        android:spinnerMode="dialog"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

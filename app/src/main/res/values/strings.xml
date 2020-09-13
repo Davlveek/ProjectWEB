@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">ProjectWEB</string>
+    <string-array name="gender">
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
+    <string name="empty_value">—</string>
+    <string-array name="months">
+        <item>@string/empty_value</item>
+        <item>January</item>
+        <item>February</item>
+        <item>March</item>
+        <item>April</item>
+        <item>May</item>
+        <item>June</item>
+        <item>July</item>
+        <item>August</item>
+        <item>September</item>
+        <item>October</item>
+        <item>November</item>
+        <item>December</item>
+    </string-array>
+    <string-array name="settings">
+        <item>Username</item>
+        <item>Password</item>
+        <item>Gender</item>
+        <item>First name</item>
+        <item>Last name</item>
+        <item>Birthday</item>
+    </string-array>
+</resources>
