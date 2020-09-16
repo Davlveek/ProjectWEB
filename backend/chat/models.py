@@ -39,7 +39,7 @@ class User(AbstractBaseUser):
 
     objects = UserManager()
 
-    USERNAME_FIELD = 'login'
+    USERNAME_FIELD = 'name'
     REQUIRED_FIELDS = ['age', 'gender']
 
     def __str__(self):
