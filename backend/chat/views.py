@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
-from .models import User
+from .models import User, UserManager
 from .serializers import UserSerializer
 
 
@@ -17,7 +17,7 @@ class LogoutView(APIView):
 
 class SignupView(APIView):
     def post(self, request):
-        User.objects.create_user(name=request.data['name'], age=request.data['age'], gender=request.data['gender'], password=request.data['password'])
+        UserManager.create_user(login=request.data['name'], age=request.data['age'], gender=request.data['gender'], password=request.data['password'])
         return Response(status=201)
 
 
