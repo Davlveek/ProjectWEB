@@ -9,7 +9,7 @@ from .serializers import UserSerializer
 # AUTH VIEWS
 
 class LogoutView(APIView):
-    permission_classes = (IsAuthenticated, )
+    #permission_classes = (IsAuthenticated, )
 
     def post(self, request):
         return Response(status=200)
@@ -34,10 +34,3 @@ class UserInfoView(APIView):
     def post(self, request):
         User.objects.filter(name=request.user.name).update(request.data)
         return Response(status=200)
-
-
-class PickupView(APIView):
-    permission_classes = (IsAuthenticated, )
-
-    def get(self, request):
-        return Response(status=404)

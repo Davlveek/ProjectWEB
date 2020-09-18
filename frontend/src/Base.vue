@@ -5,9 +5,10 @@
 
     <v-app-bar app class="bar" style="background: background-color: #485461;
                                       background-image: linear-gradient(315deg, #485461 0%, #28313b 74%);">
+      <v-app-bar-nav-icon v-if="is_authenticated" @click="settings = true"></v-app-bar-nav-icon>
       <v-toolbar-title>
         <router-link to="/" style="color: #FFF; text-decoration: none;">
-          <span @click="cleanup">Huinder</span>
+          <span @click="resetForm">Huinder</span>
         </router-link>
       </v-toolbar-title>
 
@@ -19,80 +20,137 @@
       <v-btn v-if="is_authenticated" @click="logout">Выйти</v-btn>
     </v-app-bar>
 
-    <router-view :comp="currentComp"/>
-    <!--
-    <v-footer app class="bar">
+    <v-navigation-drawer
+      v-model="settings"
+      absolute
+      temporary
+      style="background: background-color: #485461;
+              background-image: linear-gradient(315deg, #485461 0%, #28313b 74%);"
+    >
+      <v-list nav>
+        <v-list-item-group v-if="is_authenticated"
+            active-class="deep-purple--text text--accent-4">
+          <v-list-item>
+            <v-list-item-subtitle style="color: #FFF;">First name</v-list-item-subtitle>    
+            <v-list-item-title>
+              <v-text-field v-model="first_name"></v-text-field>
+            </v-list-item-title>
+          </v-list-item>
+
+          <v-list-item>
+            <v-list-item-subtitle style="color: #FFF;">Last name</v-list-item-subtitle>    
+            <v-list-item-title>
+              <v-text-field v-model="last_name"></v-text-field>
+            </v-list-item-title>
+          </v-list-item>
+
+          <v-list-item>
+            <v-list-item-subtitle style="color: #FFF;">Age</v-list-item-subtitle>    
+            <v-list-item-title>
+              <v-text-field v-model="age"></v-text-field>
+            </v-list-item-title>
+          </v-list-item>
+
+          <v-list-item>
+            <v-list-item-subtitle style="color: #FFF;">Gender</v-list-item-subtitle>    
+            <v-list-item-title>
+              <v-text-field v-model="gender"></v-text-field>
+            </v-list-item-title>
+          </v-list-item>
+        </v-list-item-group>
+
+      </v-list>
+    </v-navigation-drawer>
+
+    <router-view :comp="activeForm"/>
+    
+    <v-footer v-show="footer" app class="bar">
       <v-col class="text-left">Дахнович прими</v-col>
       <v-col class="text-center">Huinder</v-col>
       <v-col class="text-right">{{ new Date().getFullYear() }}</v-col>
     </v-footer>
-    -->
+    
   </v-app>
 </template>
 
 <script>
 import Login from './components/Login'
 import Signup from './components/Signup'
-import {updateHeader} from './api'
+
 export default {
   name: "Base",
   data: () => ({
-    currentComp: null,
+    activeForm: null,
+    settings: false,
+    footer: false,
   }),
   computed: {
     access_token() {
-      return this.$store.state.token;
-    },
-    is_authenticated() {
-      return (this.access_token === null) ? false : true;
-    },    
+      return this.$store.state.access_token;
+    }, 
     user() {
       return this.$store.state.user;
-    }
+    },
+
+    is_authenticated() {
+      return (this.access_token === null) ? false : true;
+    },   
+
+    first_name() {
+      return this.user ? this.user.first_name : null;
+    },
+    last_name() {
+      return this.user ? this.user.last_name : null;
+    },
+    age() {
+      return this.user ? this.user.age : null;
+    },
+    gender() {
+      return this.user ? this.user.gender : null;
+    },
   },
   methods: {
-    get_tokens_from_storage() {
-      var token = localStorage.getItem('access_token');
-      if (token) {
-        var refresh = localStorage.getItem('refresh_token');
-        this.$store.commit('setToken', {access: token, refresh: refresh});
-      }
-    },
+    // проверяем авторизацию перед созданием страницы    
     checkAuth() {
       if (this.access_token === null) {
-        this.get_tokens_from_storage();
+        var access = localStorage.getItem('access_token');
+        var refresh = localStorage.getItem('refresh_token');
+        if (access && refresh) {          
+          this.$store.commit('setAccessToken', access);
+          this.$store.commit('setRefreshToken', refresh);
+        }
       }
 
-      if (this.user === null && this.is_authenticated) {
-        updateHeader(this.access_token)
+      if (this.user === null && this.is_authenticated) {        
         this.$store.dispatch('getUserInfo')
-                .then(() => this.$router.push('/app'))
+                    .then(() => this.$router.currentRoute.name !== 'App' ? this.$router.push({name: 'App'}) : void(0))
       }
     },
-    showLogin() {
-      this.currentComp = Login;
+
+    // хэндлеры для кнопок в баре
+    showLogin() { this.activeForm = Login; },
+    showSignup() { this.activeForm = Signup; },
+    openAppPage() {  
+      /* let routeData = this.$router.resolve({name: 'adasd', query: {data: ""}});
+      window.open(routeData.href, '_blank'); */
     },
-    showSignup() {
-      this.currentComp = Signup;
-    },
-    openAppPage() {
-      /*
-      let routeData = this.$router.resolve({name: 'adasd', query: {data: ""}});
-      window.open(routeData.href, '_blank');
-      */
-    },
+    
+    // хэндлеры для выхода из аккаунта
     logout() {
-      localStorage.removeItem('access_token')
-      localStorage.removeItem('refresh_token')
-      this.$store.dispatch('logout')
-      updateHeader(null)
+      this.$store.commit('resetState');
+      this.resetForm()
+      
+      if (this.$router.currentRoute.name !== 'Home') {
+        this.$router.push({name: 'Home'})
+      }
     },
-    cleanup() {
-      this.currentComp = null;
+    resetForm() {
+      this.activeForm = null;
     },
   },
-  created: function() { this.checkAuth()},
-  updated: function() { this.checkAuth()},
+  beforeMount() {
+    this.checkAuth()
+  },
 }
 </script>
 

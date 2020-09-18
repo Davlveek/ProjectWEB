@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+from datetime import timedelta
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -43,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'chat',
     'corsheaders',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -116,6 +118,13 @@ REST_FRAMEWORK = {
 }
 
 
+# Simple JWT
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=1),#timedelta(days=7),
+    'REFRESH_TOKEN_LIFETIME': timedelta(weeks=52),
+}
+
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
@@ -136,3 +145,13 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 AUTH_USER_MODEL = 'chat.User'
+
+ASGI_APPLICATION = 'backend.routing.application'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
