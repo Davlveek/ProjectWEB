@@ -66,6 +66,8 @@ export default {
           password: this.password,
           age: this.age,
           gender: this.gender_choice,
+          first_name: null,
+          last_name: null,
         }
         
         this.$store.dispatch('signup', data)

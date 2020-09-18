@@ -43,25 +43,16 @@ export default {
         };
 
         this.$store.dispatch('login', data)
-                    .then(this.postlogin);
+                    .then(() => this.$store.dispatch('getUserInfo'))
+                    .then(() => this.postlogin());
         
       }
     },
     postlogin() {
-        localStorage.setItem('access_token', this.access_token);
-        localStorage.setItem('refresh_token', this.refresh_token);
         this.auth_in_process = false;
-        this.$router.push('app');
+        this.$router.push({name: 'App'});
     }
   },
-  computed: {
-    access_token() {
-      return this.$store.state.token;
-    },
-    refresh_token() {
-      return this.$store.state.refresh_token;
-    },
-  }
 };
 </script>
 

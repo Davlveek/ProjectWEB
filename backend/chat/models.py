@@ -37,16 +37,3 @@ class User(AbstractBaseUser):
 
     def __str__(self):
         return f'{self.name}, {self.age} years old, {self.get_gender_display()}'
-
-
-class MessageModel(Model):
-    user = ForeignKey(User, on_delete=CASCADE, verbose_name='user',
-                      related_name='from_user', db_index=True)
-    recipient = ForeignKey(User, on_delete=CASCADE, verbose_name='recipient',
-                           related_name='to_user', db_index=True)
-    timestamp = DateTimeField('timestamp', auto_now_add=True, editable=False,
-                              db_index=True)
-    body = TextField('body')
-
-    def __str__(self):
-        return str(self.id)
