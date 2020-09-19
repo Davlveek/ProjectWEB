@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-axios.defaults.baseURL = '//localhost:8000/';
+axios.defaults.baseURL = 'https://rev-o-dates.social:8000/';
 
 export default {
     // AUTH
