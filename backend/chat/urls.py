@@ -1,5 +1,9 @@
 from django.urls import path
 from . import views
+from django.urls import path, include
+from django.views.generic import TemplateView
+from django.contrib.auth.decorators import login_required
+from rest_framework.routers import DefaultRouter
 
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
@@ -7,9 +11,6 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 urlpatterns = [
     # Get or set info about currently authenticated user
     path('api/app/user/', views.UserInfoView.as_view(), name='userinfo'),
-    
-    # Find participants
-    path('api/app/pickup/', views.PickupView.as_view(), name='pickup'),
 
     # Auth
     path('api/auth/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),

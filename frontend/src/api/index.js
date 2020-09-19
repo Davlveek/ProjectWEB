@@ -17,19 +17,21 @@ export default {
         return axios.post('/api/auth/signup/', data)
     },
     
-    // GET INFO
-    pickup(){
-        return axios.get('/api/app/pickup/')
-    },
+    // GET/SET USER INFO
     getuserinfo() {
-        console.log(axios.defaults.headers)
         return axios.get('/api/app/user/')
     },
-
-    // SET INFO
     updateuserinfo(data) {
         return axios.post('/api/app/user/', data)
     },
+    
+    // QUEUE AND CHAT
+    search(){
+        return axios.get('/api/app/search/')
+    },
+    chat(){
+        return axios.get('/api/app/chat/')
+    }
 };
 
 export function updateHeader(token) {

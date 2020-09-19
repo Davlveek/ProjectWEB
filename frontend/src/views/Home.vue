@@ -18,7 +18,5 @@
 export default {
   name: "Home",
   props: ['comp'],
-  data: () => ({
-  })
 };
 </script>
