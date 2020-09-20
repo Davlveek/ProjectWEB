@@ -2,7 +2,6 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 import api from '../api'
-import {updateHeader} from '../api'
 
 Vue.use(Vuex)
 
@@ -14,6 +13,7 @@ const getDefaultState = () => {
     ws_connection: null,
     chatter: null,
     last_chatter: null,
+    signedup_once: false,
   }
 }
 
@@ -25,18 +25,34 @@ export default new Vuex.Store({
   mutations: {
     // AUTH
     setAccessToken(state, token) {
-      localStorage.setItem('access_token', token);
       state.access_token = token;
-      updateHeader(state.access_token);
     },
     setRefreshToken(state, token) {
-      localStorage.setItem('refresh_token', token);
       state.refresh_token = token;
-    },    
+    },
+    updateStateTokens(state) {
+      state.access_token = localStorage.getItem('access_token');
+      state.refresh_token = localStorage.getItem('refresh_token');
+    },
 
     // INFO
     updateUserInfo(state, data) {
       state.user = data;
+    },
+    signedupOnce(state) {
+      state.signedup_once = true;
+    },
+    setFirstName(state, data) {
+      state.user.first_name = data;
+    },
+    setLastName(state, data) {
+      state.user.last_name = data;
+    },
+    setAge(state, data) {
+      state.user.age = data;
+    },
+    setGender(state, data) {
+      state.user.gender = data;
     },
 
     // WebSocket
@@ -65,8 +81,6 @@ export default new Vuex.Store({
       localStorage.removeItem('access_token');
       localStorage.removeItem('refresh_token');
 
-      updateHeader(null);
-
       if (state.ws_connection) {
         state.ws_connection.close();
       }
@@ -80,8 +94,9 @@ export default new Vuex.Store({
     login({commit}, data) {
       return api.login(data)
                   .then(function({data}) {
-                    commit('setAccessToken', data.access);
-                    commit('setRefreshToken', data.refresh);
+                    localStorage.setItem('access_token', data.access);
+                    localStorage.setItem('refresh_token', data.refresh);
+                    commit('updateStateTokens');
                   })
     },
     refresh({commit}) {
@@ -89,27 +104,34 @@ export default new Vuex.Store({
                   .then(({data}) => commit('setAccessToken', data.access))
     },
     signup({commit}, data) {
-      console.log(commit);
       return api.signup(data)
+                  .then(() => commit('signedupOnce'))
     },
 
     // GET INFO
     getUserInfo({commit}) {
       return api.getuserinfo()
                 .then(({data}) => commit('updateUserInfo', data))
-                .catch(() => this.dispatch('refreshTokenAndRetry', 'getUserInfo'))
+                .catch(() => {
+                  this.commit('updateStateTokens');
+                  
+                  if (state.access_token !== null) {
+                    return this.dispatch('getUserInfo');
+                  }
+                })
+                
     },
 
     // SET INFO
-    updateUserInfo({commit}, data) {
-      return api.updateuserinfo(data)
-                .then(({data}) => commit('updateUserInfo', data))
-    },
-
-    refreshTokenAndRetry(context, action, data=null) {
-      this.dispatch('refresh')
-            .then(() => data === null ? this.dispatch(action) : this.dispatch(action, data))
-              
+    updateUserInfo({commit}) {
+      return api.updateuserinfo(state.user)
+                .catch(() => {
+                  commit('updateStateTokens');
+                  
+                  if (state.access_token !== null) {
+                    return this.dispatch('updateUserInfo');
+                  }
+                })
     },
   },
   modules: {

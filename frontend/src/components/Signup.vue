@@ -1,6 +1,7 @@
 <template>
   <v-card width="500" class="mx-auto mt-5" shaped>
     <v-form ref='form' lazy-validation>      
+
       <v-card-title class="justify-center">
         <h2>Создать аккаунт</h2>
       </v-card-title>
@@ -17,11 +18,25 @@
           <v-radio v-for="gender in genders" :key="gender.short" :label="gender.value" :value="gender.short"></v-radio>
         </v-radio-group>
 
+        <div v-if="error_message">
+          <span>{{ error_message }}</span>
+        </div>
       </v-card-text>
 
       <v-card-actions class="justify-center">
-        <v-btn @click="signup">Создать</v-btn>
+        <div v-if="signup_in_process">
+          <span class="loader"></span>
+        </div>
+        <div v-else-if="signedup_once">
+          <v-btn color="success" icon disabled>
+            Аккаунт создан
+          </v-btn>
+        </div>
+        <div v-else>
+          <v-btn @click="signup">Создать</v-btn>
+        </div>
       </v-card-actions>
+
     </v-form>
   </v-card>
 </template>
@@ -31,11 +46,15 @@
 export default {
   name: "Signup",
   data: () => ({
+    signup_in_process: false,
+    error_message: '',
+
     name: '',
     password: '',
     age: '',
     genders: [{value: "мужчина", short: "m"}, {value: "женщина", short: "f"}, {value: "другое", short: "o"}],
     gender_choice: null,
+    
     nameRules: [
       name => name.length >= 3 || 'Выберите имя длиной не менее 3 символов',
     ],
@@ -56,9 +75,14 @@ export default {
     confirmPassRules() {
       return [pass => pass === this.password || "Пароли не совпадают"]
     },
+    signedup_once() {
+      return this.$store.state.signedup_once;
+    }
   },
   methods: {
     signup() {
+      this.signup_in_process = true;
+
       if (this.$refs.form.validate()) {
 
         var data = {
@@ -71,9 +95,46 @@ export default {
         }
         
         this.$store.dispatch('signup', data)
-                   .then(() => this.$router.push('/'))
+                    .then(() => {
+                      this.signup_in_process = false;
+                    })
+                    .catch(() => this.error_message = "Ошибка, попробуйте снова");
+      }
+      else {
+        this.signup_in_process = false;
+        this.error_message = "Ошибка, попробуйте снова"
       }
     },
   },
 };
 </script>
+
+
+<style>
+.loader {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: block;
+  margin:15px auto;
+  position: relative;
+  color: #000;
+  box-sizing: border-box;
+  animation: animloader 1s linear infinite alternate;
+}
+
+@keyframes animloader {
+  0% {
+    box-shadow: -38px -6px, -14px 6px,  14px -6px;
+  }
+  33% {
+    box-shadow: -38px 6px, -14px -6px,  14px 6px;
+  }
+  66% {
+    box-shadow: -38px -6px, -14px 6px, 14px -6px;
+  }
+  100% {
+    box-shadow: -38px 6px, -14px -6px, 14px 6px;
+  }
+}
+</style>

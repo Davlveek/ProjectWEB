@@ -5,20 +5,23 @@
         
         <div v-if="round_ready">
           <h1 align="center">
-            <Timer @timesup="reset_queue" timelimit=30 />
+            <Timer @timesup="reset_queue" :timelimit="timelimit" />
           </h1>
           <Chat />
         </div>
 
         <div v-else-if="searching">
+          <h1>Ищем партнера...</h1>
           <span class="loader"></span>
         </div>
 
-        <div>
-          <h1 v-if="user">Привет, {{ user.name }}</h1>
+        <div v-else>
+          <h1 v-if="user">Привет, 
+            <span v-if="user.first_name">{{ user.first_name }}</span>
+            <span v-else>{{ user.name }}</span>
+          </h1>
           <p>Нажмите на кнопку, чтобы начать раунд</p>
-          <v-btn @click="search">Искать других дебилов</v-btn>
-          <v-btn @click='close'>вырубить сокет</v-btn>
+          <v-btn @click="search">Искать партнера</v-btn>
         </div>
 
       </div>
@@ -39,6 +42,7 @@ export default {
   data: () => ({
     searching: false,
     round_ready: false,
+    timelimit: 15,
   }),
   methods: {
     search() {
@@ -121,13 +125,12 @@ export default {
         })
       );
     },
-    onclose() {
-      this.$store.dispatch('refresh')
+    onclose(event) {
+      if (event.code === 1006) {
+        this.$store.dispatch('refresh')
                     .then(() => this.research())
+      }
       
-    },
-    close() {
-      this.connection.close()
     },
     reset_queue() {
       this.round_ready = false;
@@ -164,7 +167,6 @@ export default {
   },
   beforeMount: function() {
     if (!this.access_token) {
-      this.$emit('resetForm')
       this.$router.push({name: 'Home'})
     }
   },

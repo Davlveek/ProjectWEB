@@ -8,7 +8,7 @@
       <v-app-bar-nav-icon v-if="is_authenticated" @click="settings = true"></v-app-bar-nav-icon>
       <v-toolbar-title>
         <router-link to="/" style="color: #FFF; text-decoration: none;">
-          <span @click="resetForm">Huinder</span>
+          <span @click="activeForm = null">Huinder</span>
         </router-link>
       </v-toolbar-title>
 
@@ -30,6 +30,14 @@
       <v-list nav>
         <v-list-item-group v-if="is_authenticated"
             active-class="deep-purple--text text--accent-4">
+
+          
+          <router-link to="app" style="color: #FFF; text-decoration: none;">
+            <v-list-item>
+              <span @click="settings=false">Приложение</span>
+            </v-list-item>
+          </router-link>          
+
           <v-list-item>
             <v-list-item-subtitle style="color: #FFF;">First name</v-list-item-subtitle>    
             <v-list-item-title>
@@ -57,6 +65,11 @@
               <v-text-field v-model="gender"></v-text-field>
             </v-list-item-title>
           </v-list-item>
+
+          <v-list-item>
+            <v-btn @click="updateInfo" class="mx-auto">Сохранить</v-btn>
+          </v-list-item>
+
         </v-list-item-group>
 
       </v-list>
@@ -96,20 +109,44 @@ export default {
       return (this.access_token === null) ? false : true;
     },   
 
-    first_name() {
-      return this.user ? this.user.first_name : null;
+    first_name: {      
+      get () {
+        return this.user ? this.user.first_name : null;
+      },
+      set (value) {
+        return this.$store.commit('setFirstName', value)
+      }
     },
-    last_name() {
-      return this.user ? this.user.last_name : null;
+    last_name: {      
+      get () {
+        return this.user ? this.user.last_name : null;
+      },
+      set (value) {
+        return this.$store.commit('setLastName', value)
+      }
     },
-    age() {
-      return this.user ? this.user.age : null;
+    age: {      
+      get () {
+        return this.user ? this.user.age : null;
+      },
+      set (value) {
+        return this.$store.commit('setAge', value)
+      }
     },
-    gender() {
-      return this.user ? this.user.gender : null;
+    gender: {      
+      get () {
+        return this.user ? this.user.gender : null;
+      },
+      set (value) {
+        return this.$store.commit('setGender', value)
+      }
     },
   },
   methods: {
+    updateInfo() {
+      this.$store.dispatch('updateUserInfo')
+                  .then(() => this.settings = false);
+    },
     // проверяем авторизацию перед созданием страницы    
     checkAuth() {
       if (this.access_token === null) {
@@ -124,6 +161,7 @@ export default {
       if (this.user === null && this.is_authenticated) {        
         this.$store.dispatch('getUserInfo')
                     .then(() => this.$router.currentRoute.name !== 'App' ? this.$router.push({name: 'App'}) : void(0))
+                    
       }
     },
 
@@ -138,18 +176,15 @@ export default {
     // хэндлеры для выхода из аккаунта
     logout() {
       this.$store.commit('resetState');
-      this.resetForm()
+      this.activeForm = null;
       
       if (this.$router.currentRoute.name !== 'Home') {
         this.$router.push({name: 'Home'})
       }
     },
-    resetForm() {
-      this.activeForm = null;
-    },
   },
   beforeMount() {
-    this.checkAuth()
+    this.checkAuth();
   },
 }
 </script>

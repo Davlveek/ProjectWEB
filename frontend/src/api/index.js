@@ -2,16 +2,38 @@ import axios from 'axios'
 
 axios.defaults.baseURL = '//localhost:8000/';
 
-export default {
+axios.interceptors.request.use(function (config) {
+    config.headers.Authorization = 'Bearer ' + localStorage.getItem('access_token');
+    return config;
+}, function (error) {
+    return Promise.reject(error);
+});
+
+axios.interceptors.response.use((response) => {
+    return response;
+}, async function (error) {
+    if (error.response.status === 401) {
+        const refresh_token = localStorage.getItem('refresh_token');
+
+        await api.refresh({refresh: refresh_token})
+            .then(({data}) => {
+                localStorage.setItem('access_token', data.access);
+            })
+            .catch(() => {
+                localStorage.removeItem('access_token');
+                localStorage.removeItem('refresh_token');
+            })
+    }
+    return Promise.reject(error.response);
+});
+
+const api = {
     // AUTH
     login(data) {
         return axios.post('/api/auth/login/', data);
     },
     refresh(data) {
         return axios.post('/api/auth/refresh/', data)
-    },
-    logout() {
-        return axios.post('/api/auth/logout/', {})
     },
     signup(data) {
         return axios.post('/api/auth/signup/', data)
@@ -24,20 +46,7 @@ export default {
     updateuserinfo(data) {
         return axios.post('/api/app/user/', data)
     },
-    
-    // QUEUE AND CHAT
-    search(){
-        return axios.get('/api/app/search/')
-    },
-    chat(){
-        return axios.get('/api/app/chat/')
-    }
+
 };
 
-export function updateHeader(token) {
-        if (token === null) {
-            axios.defaults.headers.common['Authorization'] = null;
-        } else {
-            axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
-        }
-}
+export { api as default};

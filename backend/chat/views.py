@@ -8,13 +8,6 @@ from .serializers import UserSerializer
 
 # AUTH VIEWS
 
-class LogoutView(APIView):
-    #permission_classes = (IsAuthenticated, )
-
-    def post(self, request):
-        return Response(status=200)
-
-
 class SignupView(APIView):
     def post(self, request):
         User.objects.create_user(name=request.data['name'], age=request.data['age'], gender=request.data['gender'], password=request.data['password'])
@@ -32,5 +25,6 @@ class UserInfoView(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        User.objects.filter(name=request.user.name).update(request.data)
+        print(request.data)
+        User.objects.filter(name=request.user.name).update(**request.data)
         return Response(status=200)

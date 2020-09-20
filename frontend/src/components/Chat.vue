@@ -65,7 +65,6 @@ export default {
     }
   },
   beforeMount() {
-    console.log('chat set wsonmessage');
     this.$store.commit('setWSonmessage', this.onmessage);
   },
 }
