@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-axios.defaults.baseURL = '//localhost:8000/';
+axios.defaults.baseURL = 'https://rev-o-dates.social:8000/';
 
 axios.interceptors.request.use(function (config) {
     config.headers.Authorization = 'Bearer ' + localStorage.getItem('access_token');
