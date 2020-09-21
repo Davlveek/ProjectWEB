@@ -1,8 +1,7 @@
 package com.example.projectweb;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -10,6 +9,13 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.projectweb.chat.User;
+
+import java.util.concurrent.ExecutionException;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -59,11 +65,24 @@ public class LoginActivity extends AppCompatActivity {
         this.finishAffinity();
     }
 
-    public void onLoginButtonClick(View v) {
+    public void onLoginButtonClick(View v) throws ExecutionException, InterruptedException {
 
-        // TODO аутентификация
+        String username = ((EditText) findViewById(R.id.usernameLoginEditText)).getText().toString(),
+                password = ((EditText) findViewById(R.id.passwordLoginEditText)).getText().toString();
 
-        this.finish();
+        // Вызываем всякие REST-штуки чтобы логнуться
+        User user = new User(username, password);
+        AsyncLOgin loginThread = (AsyncLOgin) new AsyncLOgin();
+
+        // Получаем в итоге токен
+        Token tok = loginThread.execute(user).get();
+        if (tok.refresh.equals("") && tok.access.equals("")){
+            Context context = getApplicationContext();
+            Toast toast = Toast.makeText(context, "Could not login", Toast.LENGTH_LONG);
+            toast.show();
+        } else {
+            this.finish();
+        }
     }
 
     public void onSignupButtonClick(View v) {
@@ -82,7 +101,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 // Регстрация прошла успешно
                 case Activity.RESULT_OK:
-                    this.finish();
+                    //this.finish(); << тип зарегались и сразу предложим залогиниться
                     break;
 
                 default:

@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">ProjectWEB</string>
     <string-array name="gender">
-        <item>Male</item>
-        <item>Female</item>
+        <item>m</item>
+        <item>f</item>
     </string-array>
     <string name="empty_value">—</string>
     <string-array name="months">
