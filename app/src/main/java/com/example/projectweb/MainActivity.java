@@ -16,6 +16,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static Token token_;
+    public static String username_;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
