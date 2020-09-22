@@ -1,5 +1,6 @@
 package com.example.projectweb;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +13,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.example.projectweb.chat.User;
 
@@ -70,6 +72,7 @@ public class LoginActivity extends AppCompatActivity {
         String username = ((EditText) findViewById(R.id.usernameLoginEditText)).getText().toString(),
                 password = ((EditText) findViewById(R.id.passwordLoginEditText)).getText().toString();
 
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 111);
         // Вызываем всякие REST-штуки чтобы логнуться
         User user = new User(username, password);
         AsyncLogin loginThread = (AsyncLogin) new AsyncLogin();
