@@ -1,22 +1,20 @@
 package com.example.projectweb;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.res.TypedArrayUtils;
-
-import android.app.AlertDialog;
+import android.Manifest;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.Spinner;
+import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
+import com.example.projectweb.chat.User;
+
+import java.util.concurrent.ExecutionException;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -27,6 +25,28 @@ public class SettingsActivity extends AppCompatActivity {
 
         // Устанавливаем заголовок текущего активити
         setTitle("Settings");
+
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 111);
+        // Вызываем всякие REST-штуки чтобы получить инфу
+        AsyncGetUser getUser = (AsyncGetUser) new AsyncGetUser();
+        Context context = getApplicationContext();
+        // Получаем в итоге токен
+        User user = null;
+        try {
+            user = getUser.execute(MainActivity.token_).get();
+            if(user.getUsername().equals(" ")){
+                Toast toastee = Toast.makeText(context, "Could not get user information", Toast.LENGTH_LONG);
+                toastee.show();
+            }else{
+                ((EditText)findViewById(R.id.usernameEditText)).setText(user.getUsername());
+                ((EditText)findViewById(R.id.ageEditText)).setText(user.getAge());
+            }
+
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         // Включаем кнопку "Назад"
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

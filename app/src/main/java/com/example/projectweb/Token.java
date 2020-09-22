@@ -18,7 +18,7 @@ public class Token {
         return this.refresh;
     }
     void setRefresh(String refresh){
-        this.access = refresh;
+        this.refresh = refresh;
     }
 
     String getAccess(){
