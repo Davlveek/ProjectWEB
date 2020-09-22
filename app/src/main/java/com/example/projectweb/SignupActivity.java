@@ -15,6 +15,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.projectweb.chat.User;
 import com.example.projectweb.rest.Retrorest;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
 public class SignupActivity extends AppCompatActivity {
@@ -56,6 +58,18 @@ public class SignupActivity extends AppCompatActivity {
         String password2 = ((EditText)findViewById(R.id.retypePasswordEditText)).getText().toString();
         String age = ((EditText)findViewById(R.id.ageEditText)).getText().toString();
         String gender = ((Spinner)findViewById(R.id.genderSpinner)).getSelectedItem().toString();
+        switch (gender)
+        {
+            case "Male":
+                gender = "m";
+                break;
+            case "Female":
+                gender = "f";
+                break;
+            default:
+                gender = "o";
+                break;
+        }
         Integer code = Retrorest.BAD_ERROR;
 
         if(username.isEmpty()) {

@@ -2,10 +2,9 @@ package com.example.projectweb;
 
 import android.os.AsyncTask;
 
-import com.example.projectweb.chat.LOgin;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.example.projectweb.chat.User;
+import com.example.projectweb.rest.RestApi;
+import com.example.projectweb.rest.Retrorest;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
@@ -30,7 +29,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 // Вернет или пустой токен или нормальный токен
-public class AsyncLOgin extends AsyncTask<LOgin, Void, Token> {
+public class AsyncLogin extends AsyncTask<User, Void, Token> {
     private static final Object BASE_URL = "https://rev-o-dates.social:8000";
     private Exception exception;
 
@@ -61,7 +60,7 @@ public class AsyncLOgin extends AsyncTask<LOgin, Void, Token> {
         return context;
     }
 
-    protected Token doInBackground(LOgin... users) {
+    protected Token doInBackground(User... users) {
         Token token = new Token("", "");
 
         try {
@@ -69,7 +68,7 @@ public class AsyncLOgin extends AsyncTask<LOgin, Void, Token> {
                     sslSocketFactory(CertIt().getSocketFactory()).build();
             RequestBody requestBody = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
-                    .addFormDataPart("name", users[0].getName())
+                    .addFormDataPart("name", users[0].getUsername())
                     .addFormDataPart("password", users[0].getPassword())
                     .build();
 
