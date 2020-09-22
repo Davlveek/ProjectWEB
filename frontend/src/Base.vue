@@ -8,7 +8,7 @@
       <v-app-bar-nav-icon v-if="is_authenticated" @click="settings = true"></v-app-bar-nav-icon>
       <v-toolbar-title>
         <router-link to="/" style="color: #FFF; text-decoration: none;">
-          <span @click="activeForm = null">Huinder</span>
+          <span @click="activeForm = null">Rev-o-Dates</span>
         </router-link>
       </v-toolbar-title>
 
@@ -30,37 +30,36 @@
       <v-list nav>
         <v-list-item-group v-if="is_authenticated"
             active-class="deep-purple--text text--accent-4">
-
           
           <router-link to="app" style="color: #FFF; text-decoration: none;">
             <v-list-item>
-              <span @click="settings=false">Приложение</span>
+              <span @click="settings=false" style="color: #FFF;">Приложение</span>
             </v-list-item>
           </router-link>          
 
           <v-list-item>
-            <v-list-item-subtitle style="color: #FFF;">First name</v-list-item-subtitle>    
+            <v-list-item-subtitle style="color: #FFF;">Имя</v-list-item-subtitle>    
             <v-list-item-title>
               <v-text-field v-model="first_name"></v-text-field>
             </v-list-item-title>
           </v-list-item>
 
           <v-list-item>
-            <v-list-item-subtitle style="color: #FFF;">Last name</v-list-item-subtitle>    
+            <v-list-item-subtitle style="color: #FFF;">Фамилия</v-list-item-subtitle>    
             <v-list-item-title>
               <v-text-field v-model="last_name"></v-text-field>
             </v-list-item-title>
           </v-list-item>
 
           <v-list-item>
-            <v-list-item-subtitle style="color: #FFF;">Age</v-list-item-subtitle>    
+            <v-list-item-subtitle style="color: #FFF;">Возраст</v-list-item-subtitle>    
             <v-list-item-title>
               <v-text-field v-model="age"></v-text-field>
             </v-list-item-title>
           </v-list-item>
 
           <v-list-item>
-            <v-list-item-subtitle style="color: #FFF;">Gender</v-list-item-subtitle>    
+            <v-list-item-subtitle style="color: #FFF;">Гендер</v-list-item-subtitle>    
             <v-list-item-title>
               <v-text-field v-model="gender"></v-text-field>
             </v-list-item-title>
@@ -79,7 +78,7 @@
     
     <v-footer v-show="footer" app class="bar">
       <v-col class="text-left">Дахнович прими</v-col>
-      <v-col class="text-center">Huinder</v-col>
+      <v-col class="text-center">rev-o-dates</v-col>
       <v-col class="text-right">{{ new Date().getFullYear() }}</v-col>
     </v-footer>
     

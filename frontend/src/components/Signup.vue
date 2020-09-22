@@ -19,7 +19,7 @@
         </v-radio-group>
 
         <div v-if="error_message">
-          <span>{{ error_message }}</span>
+          <span style="color:red;">{{ error_message }}</span>
         </div>
       </v-card-text>
 
@@ -95,20 +95,26 @@ export default {
         }
         
         this.$store.dispatch('signup', data)
-                    .then(() => {
-                      this.signup_in_process = false;
-                    })
-                    .catch(() => this.error_message = "Ошибка, попробуйте снова");
+        .then(() => {
+          this.signup_in_process = false;
+        })
+        .catch((error) => {
+          this.signup_in_process = false;
+          if (error.status === 409) {
+            this.error_message = "Пользователь с таким именем уже существует, попробуйте другое";
+          }
+          else {
+            this.error_message = "Ошибка, попробуйте снова";
+          }
+        });
       }
       else {
         this.signup_in_process = false;
-        this.error_message = "Ошибка, попробуйте снова"
       }
     },
   },
 };
 </script>
-
 
 <style>
 .loader {

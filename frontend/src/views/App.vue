@@ -17,7 +17,8 @@
 
         <div v-else>
           <h1 v-if="user">Привет, 
-            <span v-if="user.first_name">{{ user.first_name }}</span>
+            <span v-if="user.first_name && user.last_name">{{ user.first_name }} {{ user.last_name }}</span>
+            <span v-else-if="user.first_name">{{ user.first_name }}</span>
             <span v-else>{{ user.name }}</span>
           </h1>
           <p>Нажмите на кнопку, чтобы начать раунд</p>

@@ -1,3 +1,4 @@
+from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -10,8 +11,11 @@ from .serializers import UserSerializer
 
 class SignupView(APIView):
     def post(self, request):
-        User.objects.create_user(name=request.data['name'], age=request.data['age'], gender=request.data['gender'], password=request.data['password'])
-        return Response(status=201)
+        if (not User.objects.filter(name=request.data['name'])):
+            User.objects.create_user(name=request.data['name'], age=request.data['age'], gender=request.data['gender'], password=request.data['password'])
+            return Response(status=201)
+        else:
+            return Response(status=409)
 
 
 # INFO VIEWS
@@ -24,7 +28,6 @@ class UserInfoView(APIView):
         serializer = UserSerializer(user, many=False)
         return Response(serializer.data)
 
-    def post(self, request):
-        print(request.data)
+    def patch(self, request):
         User.objects.filter(name=request.user.name).update(**request.data)
         return Response(status=200)

@@ -3,7 +3,10 @@ import axios from 'axios'
 axios.defaults.baseURL = 'https://rev-o-dates.social:8000/';
 
 axios.interceptors.request.use(function (config) {
-    config.headers.Authorization = 'Bearer ' + localStorage.getItem('access_token');
+    let access_token = localStorage.getItem('access_token');
+    if (access_token) {
+        config.headers.Authorization = 'Bearer ' + access_token;
+    }
     return config;
 }, function (error) {
     return Promise.reject(error);
@@ -12,7 +15,7 @@ axios.interceptors.request.use(function (config) {
 axios.interceptors.response.use((response) => {
     return response;
 }, async function (error) {
-    if (error.response.status === 401) {
+    if ((error.response.config.url !== '/api/auth/login/') && (error.response.status === 401)) {
         const refresh_token = localStorage.getItem('refresh_token');
 
         await api.refresh({refresh: refresh_token})
@@ -44,7 +47,7 @@ const api = {
         return axios.get('/api/app/user/')
     },
     updateuserinfo(data) {
-        return axios.post('/api/app/user/', data)
+        return axios.patch('/api/app/user/', data)
     },
 
 };
