@@ -84,6 +84,8 @@ public class LoginActivity extends AppCompatActivity {
             Toast toast = Toast.makeText(context, "Could not login", Toast.LENGTH_LONG);
             toast.show();
         } else {
+            MainActivity.token_ = tok;
+            MainActivity.username_ = username;
             this.finish();
         }
     }
