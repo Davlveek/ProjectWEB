@@ -10,7 +10,7 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 // Вернет или пустой токен или нормальный токен
-public class AsyncLOgin extends AsyncTask<User, Void, Token> {
+public class AsyncLogin extends AsyncTask<User, Void, Token> {
     private Exception exception;
 
     protected Token doInBackground(User... users) {

@@ -72,7 +72,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // Вызываем всякие REST-штуки чтобы логнуться
         User user = new User(username, password);
-        AsyncLOgin loginThread = (AsyncLOgin) new AsyncLOgin();
+        AsyncLogin loginThread = (AsyncLogin) new AsyncLogin();
 
         // Получаем в итоге токен
         Token tok = loginThread.execute(user).get();
