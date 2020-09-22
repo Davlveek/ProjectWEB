@@ -3,8 +3,9 @@ package com.example.projectweb;
 import android.os.AsyncTask;
 
 import com.example.projectweb.chat.User;
-import com.example.projectweb.rest.RestApi;
-import com.example.projectweb.rest.Retrorest;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
