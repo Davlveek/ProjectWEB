@@ -2,8 +2,6 @@ package com.example.projectweb;
 
 import android.os.AsyncTask;
 
-import com.example.projectweb.chat.User;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -29,7 +27,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class AsyncGetUser extends AsyncTask<Object, Void, User> {
+public class AsyncGetUser extends AsyncTask<Object, Void, String> {
     private static final Object BASE_URL = "https://rev-o-dates.social:8000";
     private Exception exception;
 
@@ -108,10 +106,10 @@ public class AsyncGetUser extends AsyncTask<Object, Void, User> {
     }
 
 
-    protected User doInBackground(Object... objs) {
+    protected String doInBackground(Object... objs) {
         Token token = (Token) objs[0];
         //String username = (String) objs[1];
-        User user = new User(" ", " ");
+        String user = "";
 
         try {
             OkHttpClient client = new OkHttpClient.Builder().
@@ -126,12 +124,12 @@ public class AsyncGetUser extends AsyncTask<Object, Void, User> {
                 if (response.isSuccessful()) {
                     String jsonData = response.body().string();
                     JSONObject Jobject = new JSONObject(jsonData);
-
-                    user.setFirstName(Jobject.getString("first_name"));
-                    user.setGender(Jobject.getString("gender"));
-                    user.setLastName(Jobject.getString("last_name"));
-                    user.setUsername(Jobject.getString("name"));
-                    user.setAge(Jobject.getString("age"));
+                    user = Jobject.toString();
+//                    user.setGender(Jobject.getString("gender"));
+//                    user.setLastName(Jobject.getString("last_name"));
+//                    user.setUsername(Jobject.getString("name"));
+//                    user.setAge(Jobject.getString("age"));
+//                    user.setFirstName(Jobject.getString("first_name"));
                 }
                 else if (response.code()==401){
                     OkHttpClient client2 = new OkHttpClient.Builder().
@@ -149,12 +147,12 @@ public class AsyncGetUser extends AsyncTask<Object, Void, User> {
                     if (response2.isSuccessful()) {
                         String jsonData = response2.body().string();
                         JSONObject Jobject = new JSONObject(jsonData);
-
-                        user.setFirstName(Jobject.getString("first_name"));
-                        user.setGender(Jobject.getString("gender"));
-                        user.setLastName(Jobject.getString("last_name"));
-                        user.setUsername(Jobject.getString("name"));
-                        user.setAge(Jobject.getString("age"));
+                        user = Jobject.toString();
+//                        user.setFirstName(Jobject.getString("first_name"));
+//                        user.setGender(Jobject.getString("gender"));
+//                        user.setLastName(Jobject.getString("last_name"));
+//                        user.setUsername(Jobject.getString("name"));
+//                        user.setAge(Jobject.getString("age"));
                     }
                 }
                 // Do something with the response.

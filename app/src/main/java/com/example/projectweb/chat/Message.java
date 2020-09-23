@@ -47,4 +47,8 @@ public class Message implements Parcelable {
         dest.writeSerializable(time);
         dest.writeSerializable(type);
     }
+
+    public String getMessage() {
+        return message;
+    }
 }

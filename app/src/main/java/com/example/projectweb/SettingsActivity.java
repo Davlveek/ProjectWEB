@@ -12,7 +12,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-import com.example.projectweb.chat.User;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.concurrent.ExecutionException;
 
@@ -31,15 +32,23 @@ public class SettingsActivity extends AppCompatActivity {
         AsyncGetUser getUser = (AsyncGetUser) new AsyncGetUser();
         Context context = getApplicationContext();
         // Получаем в итоге токен
-        User user = null;
+        String user = null;
+
         try {
             user = getUser.execute(MainActivity.token_).get();
-            if(user.getUsername().equals(" ")){
+            if(user.isEmpty()){
                 Toast toastee = Toast.makeText(context, "Could not get user information", Toast.LENGTH_LONG);
                 toastee.show();
             }else{
-                ((EditText)findViewById(R.id.usernameEditText)).setText(user.getUsername());
-                ((EditText)findViewById(R.id.ageEditText)).setText(user.getAge());
+                try {
+                    JSONObject userJson = new JSONObject(user);
+                    MainActivity.itsMe = user;
+                    ((EditText)findViewById(R.id.usernameEditText)).setText(userJson.getString("name"));
+                    ((EditText)findViewById(R.id.ageEditText)).setText(userJson.getString("age"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
             }
 
         } catch (ExecutionException e) {

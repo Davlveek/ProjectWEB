@@ -1,11 +1,5 @@
 package com.example.projectweb;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -15,6 +9,11 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.projectweb.chat.Message;
 import com.example.projectweb.chat.MessageListAdapter;
 import com.example.projectweb.chat.MessageType;
@@ -23,9 +22,9 @@ import java.util.ArrayList;
 
 public class ChatActivity extends AppCompatActivity {
 
-    MessageListAdapter adapter;
-    RecyclerView recyclerView;
-    ArrayList<Message> messageList = new ArrayList<>();
+    static MessageListAdapter adapter;
+    static RecyclerView recyclerView;
+    static ArrayList<Message> messageList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,25 +87,31 @@ public class ChatActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public static void AddMessage(String msg, MessageType msgType){
+        // Добавляем новое сообщение в listView
+        Message message = new Message(msg, MessageType.sent);
+        messageList.add(message);
+        // Прокручиваем listView вниз к новому сообщению
+        recyclerView.scrollToPosition(messageList.size() - 1);
+
+        // Уведомляем адаптер
+        adapter.notifyItemInserted(messageList.size() - 1);
+    }
+
     public void onSendButtonClick(View view) {
 
         // Нажата кнопка "Отправить"
         EditText editTextMessage = (EditText) findViewById(R.id.messageEditText);
         if (editTextMessage.length() > 0) {
 
-            // Добавляем новое сообщение в listView
-            Message message = new Message(editTextMessage.getText().toString(), MessageType.sent);
-            messageList.add(message);
-
             // Отправляем сообщение
             // TODO
+            MainActivity.WEB_SOCKET.sendText(String.format("{" +
+                    "\"type\":\"message\"," +
+                    "\"message\":{\"text\":\"%s\",\"author\":%s},\"chatter\":%s" +
+                    "}", editTextMessage.getText().toString(), MainActivity.itsMe, MainActivity.nowChatter));
 
-            // Прокручиваем listView вниз к новому сообщению
-            recyclerView.scrollToPosition(messageList.size() - 1);
-
-            // Уведомляем адаптер
-            adapter.notifyItemInserted(messageList.size() - 1);
-
+            AddMessage(editTextMessage.getText().toString(), MessageType.sent);
             // Сбрасываем текст
             editTextMessage.setText("");
         }
