@@ -2,6 +2,7 @@ package com.example.projectweb;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -66,9 +67,27 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
+
+        new CountDownTimer(60000, 1000) {
+            int time=60;
+            public void onTick(long millisUntilFinished) {
+                setTitle("Chat room 0:"+checkDigit(time));
+                time--;
+            }
+
+            public void onFinish() {
+                setTitle("END OF TIME");
+            }
+
+        }.start();
+
         // Включаем клавиатуру
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
+    public String checkDigit(int number) {
+        return number <= 9 ? "0" + number : String.valueOf(number);
+    }
+
     public static ChatActivity getInstance() {
         return instance;
     }
@@ -102,8 +121,6 @@ public class ChatActivity extends AppCompatActivity {
         // Уведомляем адаптер
         adapter.notifyItemInserted(messageList.size() - 1);
         adapter.notifyDataSetChanged();
-        setContentView (R.layout.activity_chat);
-        findViewById(R.layout.activity_chat).invalidate();
     }
 
     public void onSendButtonClick(View view) {

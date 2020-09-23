@@ -11,10 +11,12 @@ public class Message implements Parcelable {
     String message;
     Date time;
     MessageType type;
+    String name;
 
     public Message(String message, MessageType type) {
         this.message = message;
         this.type = type;
+        this.name = name;
         this.time = new Date();
     }
 
