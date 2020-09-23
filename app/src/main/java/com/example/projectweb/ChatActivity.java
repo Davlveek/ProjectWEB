@@ -68,8 +68,8 @@ public class ChatActivity extends AppCompatActivity {
         });
 
 
-        new CountDownTimer(10000, 1000) {
-            int time=10;
+        new CountDownTimer(60000, 1000) {
+            int time=60;
             public void onTick(long millisUntilFinished) {
                 setTitle("Chat room 0:"+checkDigit(time));
                 time--;
