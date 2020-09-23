@@ -1,5 +1,6 @@
 package com.example.projectweb;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -10,8 +11,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.androidnetworking.AndroidNetworking;
 import com.example.projectweb.chat.MessageType;
@@ -38,6 +41,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
@@ -118,9 +122,36 @@ public class MainActivity extends AppCompatActivity {
 
     private void onAddChatClick() throws IOException, WebSocketException, CertificateException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, InterruptedException {
         // установили соединение
-
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 111);
+        // Вызываем всякие REST-штуки чтобы получить инфу
+        AsyncGetUser getUser = (AsyncGetUser) new AsyncGetUser();
+        Context context = getApplicationContext();
+        // Получаем в итоге токен
+        String user = null;
+
+        try {
+            user = getUser.execute(MainActivity.token_).get();
+            if(user.isEmpty()){
+                Toast toastee = Toast.makeText(context, "Could not get user information", Toast.LENGTH_LONG);
+                toastee.show();
+            }else{
+                try {
+                    JSONObject userJson = new JSONObject(user);
+                    MainActivity.itsMe = user;
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
 
         WEB_SOCKET = connect();
         WEB_SOCKET.sendText("{\"type\":\"init.connection\"}");
@@ -202,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
                             JSONObject msg = jsonka.getJSONObject("message");
                             if(msg.getString("author").equals(nowChatter)){
                                 // рисуем чужое смс
-                                ChatActivity.AddMessage(msg.getString("text"), MessageType.received);
+                                ChatActivity.getInstance().AddMessage(msg.getString("text"), MessageType.received);
                             }
                         }
                     }

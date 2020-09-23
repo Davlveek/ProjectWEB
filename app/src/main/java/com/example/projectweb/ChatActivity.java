@@ -1,6 +1,8 @@
 package com.example.projectweb;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,10 +24,10 @@ import java.util.ArrayList;
 
 public class ChatActivity extends AppCompatActivity {
 
-    static MessageListAdapter adapter;
-    static RecyclerView recyclerView;
-    static ArrayList<Message> messageList = new ArrayList<>();
-
+    MessageListAdapter adapter;
+    RecyclerView recyclerView;
+    ArrayList<Message> messageList = new ArrayList<>();
+    static ChatActivity instance;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,7 +35,7 @@ public class ChatActivity extends AppCompatActivity {
 
         // Устанавливаем заголовок текущего активити
         setTitle("Chat room");
-
+        instance = this;
         // Включаем кнопку "Назад"
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -67,7 +69,9 @@ public class ChatActivity extends AppCompatActivity {
         // Включаем клавиатуру
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
-
+    public static ChatActivity getInstance() {
+        return instance;
+    }
     // Закрытие текущего активити
     public void getBack() {
         finish();
@@ -87,15 +91,19 @@ public class ChatActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public static void AddMessage(String msg, MessageType msgType){
+    @SuppressLint("ResourceType")
+    public void AddMessage(String msg, MessageType msgType){
         // Добавляем новое сообщение в listView
-        Message message = new Message(msg, MessageType.sent);
+        Message message = new Message(msg, msgType);
         messageList.add(message);
         // Прокручиваем listView вниз к новому сообщению
         recyclerView.scrollToPosition(messageList.size() - 1);
 
         // Уведомляем адаптер
         adapter.notifyItemInserted(messageList.size() - 1);
+        adapter.notifyDataSetChanged();
+        setContentView (R.layout.activity_chat);
+        findViewById(R.layout.activity_chat).invalidate();
     }
 
     public void onSendButtonClick(View view) {
@@ -110,7 +118,10 @@ public class ChatActivity extends AppCompatActivity {
                     "\"type\":\"message\"," +
                     "\"message\":{\"text\":\"%s\",\"author\":%s},\"chatter\":%s" +
                     "}", editTextMessage.getText().toString(), MainActivity.itsMe, MainActivity.nowChatter));
-
+            Log.d("SENTD",String.format("{" +
+                    "\"type\":\"message\"," +
+                    "\"message\":{\"text\":\"%s\",\"author\":%s},\"chatter\":%s" +
+                    "}", editTextMessage.getText().toString(), MainActivity.itsMe, MainActivity.nowChatter));
             AddMessage(editTextMessage.getText().toString(), MessageType.sent);
             // Сбрасываем текст
             editTextMessage.setText("");
