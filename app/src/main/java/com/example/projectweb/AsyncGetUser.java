@@ -71,7 +71,7 @@ public class AsyncGetUser extends AsyncTask<Object, Void, String> {
 
             Request request = new Request.Builder()
                     .url(BASE_URL + "/api/auth/refresh/")
-                    .addHeader("Authorization", "Bearer " + tok.getAccess())
+                    //.addHeader("Authorization", "Bearer " + tok.getAccess())
                     .post(requestBody)
                     .build();
             try {
@@ -135,14 +135,12 @@ public class AsyncGetUser extends AsyncTask<Object, Void, String> {
                     OkHttpClient client2 = new OkHttpClient.Builder().
                             sslSocketFactory(CertIt().getSocketFactory()).build();
 
-                    Request request2 = new Request.Builder()
-                            .url(BASE_URL + "/api/app/user/")
-                            .addHeader("Authorization:", "Bearer " + token.access)
-                            .build();
-
                     token.setAccess(Refresh(token));
                     objs[0] = token;
-
+                    Request request2 = new Request.Builder()
+                            .url(BASE_URL + "/api/app/user/")
+                            .addHeader("Authorization:", "Bearer " + token.getAccess())
+                            .build();
                     Response response2 = client2.newCall(request2).execute();
                     if (response2.isSuccessful()) {
                         String jsonData = response2.body().string();
