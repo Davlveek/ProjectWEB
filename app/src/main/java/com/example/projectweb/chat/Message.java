@@ -11,17 +11,18 @@ public class Message implements Parcelable {
     String message;
     Date time;
     MessageType type;
-    String name;
+    String author;
 
-    public Message(String message, MessageType type) {
+    public Message(String message, String author, MessageType type) {
         this.message = message;
+        this.author = author;
         this.type = type;
-        this.name = name;
         this.time = new Date();
     }
 
     protected Message(Parcel in) {
         message = in.readString();
+        author = in.readString();
         time = (Date) in.readSerializable();
         type = (MessageType) in.readSerializable();
     }
@@ -46,6 +47,7 @@ public class Message implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(message);
+        dest.writeString(author);
         dest.writeSerializable(time);
         dest.writeSerializable(type);
     }

@@ -233,7 +233,11 @@ public class MainActivity extends AppCompatActivity {
                             JSONObject msg = jsonka.getJSONObject("message");
                             if(msg.getString("author").equals(nowChatter)){
                                 // рисуем чужое смс
-                                ChatActivity.getInstance().AddMessage(msg.getString("text"), MessageType.received);
+                                ChatActivity.getInstance().AddMessage(
+                                        msg.getString("text"),
+                                        msg.getJSONObject("author").getString("name"),
+                                        MessageType.received
+                                );
                             }
                         }
                     }
