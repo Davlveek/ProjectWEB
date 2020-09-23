@@ -111,10 +111,12 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     @SuppressLint("ResourceType")
-    public void AddMessage(String msg, MessageType msgType){
+    public void AddMessage(String msg, String author, MessageType msgType){
+
         // Добавляем новое сообщение в listView
-        Message message = new Message(msg, msgType);
+        Message message = new Message(msg, author, msgType);
         messageList.add(message);
+
         // Прокручиваем listView вниз к новому сообщению
         recyclerView.scrollToPosition(messageList.size() - 1);
 
@@ -139,7 +141,7 @@ public class ChatActivity extends AppCompatActivity {
                     "\"type\":\"message\"," +
                     "\"message\":{\"text\":\"%s\",\"author\":%s},\"chatter\":%s" +
                     "}", editTextMessage.getText().toString(), MainActivity.itsMe, MainActivity.nowChatter));
-            AddMessage(editTextMessage.getText().toString(), MessageType.sent);
+            AddMessage(editTextMessage.getText().toString(), "me", MessageType.sent);
             // Сбрасываем текст
             editTextMessage.setText("");
         }
