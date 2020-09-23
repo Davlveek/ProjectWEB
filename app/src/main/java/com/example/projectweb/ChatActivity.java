@@ -68,8 +68,8 @@ public class ChatActivity extends AppCompatActivity {
         });
 
 
-        new CountDownTimer(60000, 1000) {
-            int time=60;
+        new CountDownTimer(10000, 1000) {
+            int time=10;
             public void onTick(long millisUntilFinished) {
                 setTitle("Chat room 0:"+checkDigit(time));
                 time--;
@@ -77,6 +77,13 @@ public class ChatActivity extends AppCompatActivity {
 
             public void onFinish() {
                 setTitle("END OF TIME");
+                MainActivity.WEB_SOCKET.sendText(String.format("{" +
+                        "\"type\":\"reset.connection\"," +
+                            "\"chatter\":%s" +
+                        "}", MainActivity.nowChatter));
+                MainActivity.lastChatter = MainActivity.nowChatter;
+                MainActivity.nowChatter = null;
+                ChatActivity.getInstance().getBack();
             }
 
         }.start();
