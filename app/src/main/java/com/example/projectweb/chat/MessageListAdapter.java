@@ -80,16 +80,18 @@ public class MessageListAdapter extends RecyclerView.Adapter {
 
     private class ReceivedMessageHolder extends RecyclerView.ViewHolder {
 
-        TextView messageText, timeText;
+        TextView messageText, timeText, authorText;
 
         ReceivedMessageHolder(View itemView) {
             super(itemView);
             messageText = (TextView) itemView.findViewById(R.id.message_body);
+            authorText = (TextView) itemView.findViewById(R.id.author_name);
 //            timeText = (TextView) itemView.findViewById(R.id.text_message_time);
         }
 
         void bind(Message message) {
             messageText.setText(message.message);
+            authorText.setText(message.author);
 //            timeText.setText(df.format(message.time));
         }
     }
